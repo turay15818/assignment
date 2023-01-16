@@ -3,7 +3,7 @@ import cors from 'cors'
 import bodyParser from "body-parser";
 import SequelizeStore from 'connect-session-sequelize'
 import UserRouter from './routes/UserRouter.js'
-import Database from "./config/Database.js";
+import db from "./config/Database.js";
 import flash from "express-flash";
 import session from "express-session";
 import dotenv from'dotenv'
@@ -16,30 +16,32 @@ const app = express();
 app.use(express.urlencoded({ extended: true }))
 const sessionStore = SequelizeStore(session.Store);
 const store = new sessionStore({
-    Database: Database
+    db: db
 });
 
-(async()=>{
-    await Database.sync
-})()
+
+// (async () => {
+//     await db.sync();
+// })();
+
 
 
 app.use(flash())
 app.use(bodyParser.urlencoded({extended: true}))
 
-// app.use(session({
-//     secret: process.env.SECRET,
-//     reSave: false,
-//     saveUninitialized: true,
-//     store: store,
-//     cookie: {
-//         secure: 'auto'
-//     }
-// }));
+app.use(session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+    cookie: {
+        secure: 'auto'
+    }
+}));
 
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3009',
+    origin: 'http://localhost:9091',
 }));
 
 
